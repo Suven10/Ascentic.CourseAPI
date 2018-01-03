@@ -28,8 +28,15 @@ class CategoryHandler{
 	public function getById($id)
 	{
 		$query="select * from category where guCatId='".$id."'";
-		return $this->db->query($query);
-	
+		$rawData=$this->db->query($query);
+		if (isset ( $rawData )) {
+		
+			$query = "select * from courses where guCatId ='" . $id . "'";
+			$DetailData = $this->db->query ( $query );
+		
+			$rawData [0] ["CourseDetails"] = $DetailData;
+		}
+		return $rawData;
 	}
 	
 	public function mapCategoryData($input){
