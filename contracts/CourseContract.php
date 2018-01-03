@@ -11,6 +11,7 @@ Class Course{
 	public $totModules;
 	public $desc;
 	public $createdDate;
+	public $imgPath;
 }
 
 

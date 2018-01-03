@@ -51,6 +51,7 @@ class CourseHandler{
 		$course->desc=$input["desc"];
 		$course->filePath=$input["filePath"];
 		$course->totModules=$input["noOfModules"];
+		$course->imgPath=$input["imgPath"];
 		$course->createdDate=date("Y-m-d H:i:s");
 		
 		return $course;
@@ -59,7 +60,7 @@ class CourseHandler{
 	public function insertCourseData($courseData)
 	{
 		return $query ="INSERT INTO course
-						(guCourseId,guCatId,code,name,type,description,filePath,createdDate,noOfModules)
+						(guCourseId,guCatId,code,name,type,description,filePath,createdDate,noOfModules,imagePath)
 						VALUES
 						(
 						'".$courseData->guCourseId."',
@@ -70,7 +71,8 @@ class CourseHandler{
 						'".$courseData->desc."',
 						'".$courseData->filePath."',
 						'".$courseData->createdDate."',
-						'".$courseData->totModules."')";
+						'".$courseData->totModules."',
+						'".$courseData->imgPath."')";
 	
 		 
 	}
