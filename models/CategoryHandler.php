@@ -31,7 +31,7 @@ class CategoryHandler{
 		$rawData=$this->db->query($query);
 		if (isset ( $rawData )) {
 		
-			$query = "select * from courses where guCatId ='" . $id . "'";
+			$query = "select * from course where guCatId ='" . $id . "'";
 			$DetailData = $this->db->query ( $query );
 		
 			$rawData [0] ["CourseDetails"] = $DetailData;
