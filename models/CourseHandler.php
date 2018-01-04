@@ -35,6 +35,11 @@ class CourseHandler{
 			$DetailData = $this->db->query ( $query );
 				
 			$rawData [0] ["subModules"] = $DetailData;
+			
+			$query = "select * from quiz where guCourseId ='" . $rawData [0] ["guCourseId"] . "'";
+			$QuizData = $this->db->query ( $query );
+			
+			$rawData [0] ["Quizes"] = $QuizData;
 		}
 		return $rawData;
 	
@@ -97,16 +102,14 @@ class CourseHandler{
 	public function insertQuizData($quizData)
 	{
 		return $query ="INSERT INTO Quiz
-						(guCourseId,guQuizId,question,selectiveAnswers,description,isMultiple,finalAnswers)
+						(guCourseId,guQuizId,question,selectiveAnswers,description)
 						VALUES
 						(
 						'".$quizData->guCourseId."',
 						'".$quizData->guQuizId."',
 						'".$quizData->question."',
 						'".$quizData->selectiveAnswers."',
-						'".$quizData->desc."',
-						'".$quizData->isMultiple."',
-						'".$quizData->finalAnswers."')";
+						'".$quizData->desc."')";
 	
 			
 	}
@@ -135,8 +138,8 @@ class CourseHandler{
 				{
 					$value["guCourseId"]=$input["guCourseId"];
 					$quizData=$this->_mapQuizData($value);
-					$chapQuery=$this->insertQuizData($quizData);
-					$chapterData = $this->db->insert ( $chapQuery );
+					$quizQuery=$this->insertQuizData($quizData);
+					$quizData = $this->db->insert ( $quizQuery );
 				}
 			}
 			$this->db->commit();
@@ -169,8 +172,8 @@ class CourseHandler{
 		$quiz->question=$input["question"];
 		$quiz->selectiveAnswers=json_encode($input["selectiveAnswers"]);
 		$quiz->desc="";
-		$quiz->isMultiple=strtolower(($input["answerType"])=="single")?false:true;
-		$quiz->finalAnswers=json_encode($input["finalAnswers"]);
+		//$quiz->isMultiple=strtolower(($input["answerType"])=="single")?false:true;
+		//$quiz->finalAnswers=json_encode($input["finalAnswers"]);
 		return $quiz;
 	}
 	
