@@ -94,6 +94,23 @@ class CourseHandler{
 			
 	}
 	
+	public function insertQuizData($quizData)
+	{
+		return $query ="INSERT INTO Quiz
+						(guCourseId,guQuizId,question,selectiveAnswers,description,isMultiple,finalAnswers)
+						VALUES
+						(
+						'".$quizData->guCourseId."',
+						'".$quizData->guQuizId."',
+						'".$quizData->question."',
+						'".$quizData->selectiveAnswers."',
+						'".$quizData->desc."',
+						'".$quizData->isMultiple."',
+						'".$quizData->finalAnswers."')";
+	
+			
+	}
+	
 	public function insertCourse($input) {
 		$courseData=$this->mapCourseData($input);
 		$query = $this->insertCourseData($courseData);
@@ -103,12 +120,22 @@ class CourseHandler{
 			$rawData->guCourseId=$courseData->guCourseId;
 			$rawData->message="Course inserted successfully.";
 			$input["guCourseId"]=$rawData->guCourseId;
-			if($courseData->type!="Quiz"){
+			if($courseData->type=="Multimedia"){
 				foreach($input["subModules"] as $key=>$value)
 				{
 					$value["guCourseId"]=$input["guCourseId"];
 					$chapterData=$this->_mapChapterData($value);
 					$chapQuery=$this->insertChapterData($chapterData);
+					$chapterData = $this->db->insert ( $chapQuery );
+				}
+			}
+			else if($courseData->type=="Quiz")
+			{
+				foreach($input["quizzes"] as $key=>$value)
+				{
+					$value["guCourseId"]=$input["guCourseId"];
+					$quizData=$this->_mapQuizData($value);
+					$chapQuery=$this->insertQuizData($quizData);
 					$chapterData = $this->db->insert ( $chapQuery );
 				}
 			}
@@ -133,6 +160,18 @@ class CourseHandler{
 		$chapter->totModules=$input["noOfModules"];
 	
 		return $chapter;
+	}
+	
+	private function _mapQuizData($input){
+		$quiz=new stdClass(); 
+		$quiz->guQuizId=GUID::getGUID();
+		$quiz->guCourseId=$input["guCourseId"];
+		$quiz->question=$input["question"];
+		$quiz->selectiveAnswers=json_encode($input["selectiveAnswers"]);
+		$quiz->desc="";
+		$quiz->isMultiple=strtolower(($input["answerType"])=="single")?false:true;
+		$quiz->finalAnswers=json_encode($input["finalAnswers"]);
+		return $quiz;
 	}
 	
 	public function uploadFile($jsondata,$filename,$folder)
